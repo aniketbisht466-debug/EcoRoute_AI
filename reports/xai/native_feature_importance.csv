@@ -1,0 +1,5 @@
+feature,importance
+acceleration_ms2,0.76426476
+speed_kmh,0.11504708
+jerk_ms3,0.10834938
+distance_to_intersection_m,0.012338747

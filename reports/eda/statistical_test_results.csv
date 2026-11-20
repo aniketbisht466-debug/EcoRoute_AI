@@ -1,0 +1,3 @@
+test,statistic,p_value,effect_size,effect_measure,significant_at_005
+Welch t-test,4.588846021921477,6.1203886795131326e-06,0.42369875846710003,Cohen d,True
+Mann-Whitney U,44031.0,1.403952219739504e-05,0.220100864553314,Rank biserial,True

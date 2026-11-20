@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>EcoRoute AI | Fuel Prediction Lab</title>
+
+    <style>
+        :root {
+            --bg: #080F19;
+            --surface: #111C2E;
+            --border: #263449;
+            --text: #F1F5F9;
+            --muted: #94A3B8;
+            --green: #10B981;
+            --blue: #38BDF8;
+            --amber: #F59E0B;
+            --red: #F43F5E;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        header {
+            padding: 24px 5%;
+            background: #0B1220;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            font-size: 28px;
+            color: var(--green);
+            font-weight: 750;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: var(--green);
+        }
+
+        main {
+            max-width: 1450px;
+            margin: auto;
+            padding: 35px 5%;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-top: 0;
+        }
+
+        .description {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 28px;
+            align-items: start;
+        }
+
+        .card {
+            padding: 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+        }
+
+        .control {
+            margin: 24px 0;
+        }
+
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .control-header label {
+            font-weight: 550;
+            font-size: 14px;
+        }
+
+        input[type="number"] {
+            width: 125px;
+            padding: 10px;
+            background: #0B1220;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        input[type="number"]:focus {
+            outline: 1px solid var(--green);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--green);
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            accent-color: var(--green);
+        }
+
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .unit {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            color: var(--muted);
+            font-size: 12px;
+            margin: 20px 0;
+        }
+
+        button {
+            background: var(--green);
+            color: #052E23;
+            border: none;
+            border-radius: 9px;
+            padding: 14px 20px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        .secondary {
+            color: var(--text);
+            background: transparent;
+            border: 1px solid var(--border);
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .actions button:first-child {
+            flex: 1;
+        }
+
+        .metric {
+            margin-top: 15px;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #0B1220;
+        }
+
+        .metric-label {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-top: 8px;
+            color: var(--green);
+            overflow-wrap: anywhere;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .metrics-grid .metric-value {
+            font-size: 25px;
+        }
+
+        .status {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.7;
+            margin-top: 18px;
+        }
+
+        .warning {
+            display: none;
+            margin-top: 18px;
+            padding: 14px;
+            background: #F59E0B12;
+            border: 1px solid #F59E0B55;
+            border-radius: 8px;
+            color: #FCD34D;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .warning ul {
+            padding-left: 18px;
+            margin-bottom: 0;
+        }
+
+        .model-card {
+            margin-top: 20px;
+        }
+
+        .model-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(170px, 1fr));
+            gap: 12px;
+        }
+
+        .model-grid strong {
+            display: block;
+            margin-top: 10px;
+            font-size: 22px;
+            color: var(--blue);
+            overflow-wrap: anywhere;
+        }
+
+        footer {
+            padding: 24px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        @media(max-width: 900px) {
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width: 480px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+
+        <div>
+            <div class="brand">EcoRoute AI</div>
+            <div class="subtitle">
+                INTELLIGENT FREIGHT MOBILITY
+            </div>
+        </div>
+
+        <nav>
+            <a href="/dashboard">Route Planner</a>
+            <a href="/fuel-lab" class="active">Fuel Lab</a>
+            <a href="/analytics">Research Analytics</a>
+            <a href="/docs">API Documentation</a>
+        </nav>
+
+    </header>
+
+    <main>
+
+        <h1>Fuel Prediction Laboratory</h1>
+
+        <p class="description">
+            Interactive estimation of heavy-duty truck fuel
+            consumption and fuel-derived CO₂ emissions.
+        </p>
+
+        <div class="workspace">
+
+            <section class="card">
+
+                <h2>Vehicle Telemetry</h2>
+
+                <p class="description">
+                    Adjust the vehicle operating conditions.
+                    Sliders reflect the model's training ranges.
+                </p>
+
+                <div id="controls"></div>
+
+                <div class="options">
+
+                    <label>
+                        <input type="checkbox" id="live" checked>
+                        Live predictions
+                    </label>
+
+                    <label>
+                        <input type="checkbox" id="strict" checked>
+                        Enforce training ranges
+                    </label>
+
+                </div>
+
+                <div class="actions">
+
+                    <button id="predict" disabled>
+                        Predict Fuel
+                    </button>
+
+                    <button id="reset" class="secondary" disabled>
+                        Reset
+                    </button>
+
+                </div>
+
+                <p id="status" class="status" role="status" aria-live="polite">
+                    Connecting to prediction engine...
+                </p>
+
+            </section>
+
+            <section class="card">
+
+                <h2>Prediction Results</h2>
+
+                <div class="metric">
+
+                    <div class="metric-label">
+                        Instantaneous fuel consumption
+                    </div>
+
+                    <div class="metric-value" id="fuel-lps">
+                        --
+                    </div>
+
+                </div>
+
+                <div class="metrics-grid">
+
+                    <div class="metric">
+
+                        <div class="metric-label">
+                            Hourly fuel rate
+                        </div>
+
+                        <div class="metric-value" id="fuel-lph">
+                            --
+                        </div>
+
+                    </div>
+
+                    <div class="metric">
+
+                        <div class="metric-label">
+                            Estimated CO₂ rate
+                        </div>
+
+                        <div class="metric-value" id="co2-gps">
+                            --
+                        </div>
+
+                    </div>
+
+                    <div class="metric">
+
+                        <div class="metric-label">
+                            Estimated CO₂ per hour
+                        </div>
+
+                        <div class="metric-value" id="co2-kgh">
+                            --
+                        </div>
+
+                    </div>
+
+                    <div class="metric">
+
+                        <div class="metric-label">
+                            Model training range
+                        </div>
+
+                        <div class="metric-value" id="domain-status">
+                            --
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="warning" id="warnings">
+
+                    <strong>Prediction warnings</strong>
+
+                    <ul id="warning-list"></ul>
+
+                </div>
+
+                <p class="description">
+
+                    Instantaneous predictions are not guaranteed
+                    journey-level fuel consumption estimates.
+                    Hourly rates assume these operating
+                    conditions remain constant.
+
+                </p>
+
+            </section>
+
+        </div>
+
+        <section class="card model-card">
+
+            <h2>Machine Learning Intelligence</h2>
+
+            <div class="model-grid">
+
+                <div class="metric">
+                    <span class="metric-label">
+                        Selected model
+                    </span>
+                    <strong id="model-name">--</strong>
+                </div>
+
+                <div class="metric">
+                    <span class="metric-label">
+                        Held-out test R²
+                    </span>
+                    <strong id="test-r2">--</strong>
+                </div>
+
+                <div class="metric">
+                    <span class="metric-label">
+                        Held-out test RMSE
+                    </span>
+                    <strong id="test-rmse">--</strong>
+                </div>
+
+                <div class="metric">
+                    <span class="metric-label">
+                        Trajectory fuel WAPE
+                    </span>
+                    <strong id="trajectory-wape">--</strong>
+                </div>
+
+            </div>
+
+            <p class="description">
+                Metrics are loaded directly from the final
+                model metadata. Training-range checks are
+                not guarantees of prediction accuracy.
+            </p>
+
+        </section>
+
+    </main>
+
+    <footer>
+        EcoRoute AI · Research and Simulation Platform
+    </footer>
+
+    <script>
+
+        const $ = id => document.getElementById(id);
+
+        const featureDefinitions = {
+
+            speed_kmh: {
+                label: "Vehicle Speed",
+                unit: "km/h"
+            },
+
+            acceleration_ms2: {
+                label: "Acceleration",
+                unit: "m/s²"
+            },
+
+            jerk_ms3: {
+                label: "Jerk",
+                unit: "m/s³"
+            },
+
+            distance_to_intersection_m: {
+                label: "Distance to Intersection",
+                unit: "m"
+            }
+        };
+
+        let modelInfo = null;
+
+        let timer = null;
+
+        let controller = null;
+
+        let generation = 0;
+
+        const controls = new Map();
+
+
+        function format(value, decimals, unit = "") {
+
+            if (
+                value === null ||
+                value === undefined ||
+                !Number.isFinite(Number(value))
+            ) {
+                return "N/A";
+            }
+
+            return Number(value).toFixed(decimals)
+                + (unit ? " " + unit : "");
+        }
+
+
+        function setStatus(message, error = false) {
+
+            $("status").textContent = message;
+
+            $("status").style.color =
+                error ? "#F43F5E" : "#94A3B8";
+        }
+
+
+        async function request(url, options = {}) {
+
+            const response = await fetch(url, options);
+
+            const data = await response.json();
+
+            if (!response.ok) {
+
+                const detail = typeof data.detail === "string"
+                    ? data.detail
+                    : "Request failed: " + response.status;
+
+                throw new Error(detail);
+            }
+
+            return data;
+        }
+
+
+        function createControl(feature, domain) {
+
+            const definition = featureDefinitions[feature];
+
+            if (!definition) {
+
+                throw new Error(
+                    "Unsupported feature: " + feature
+                );
+            }
+
+            const min = Number(domain.min);
+            const max = Number(domain.max);
+
+            const initial = Number(domain.median);
+
+            if (
+                ![min, max, initial].every(Number.isFinite)
+                || min > max
+                || initial < min
+                || initial > max
+            ) {
+                throw new Error(
+                    "Invalid feature domain: " + feature
+                );
+            }
+
+            const wrapper = document.createElement("div");
+
+            wrapper.className = "control";
+
+            const header = document.createElement("div");
+
+            header.className = "control-header";
+
+            const label = document.createElement("label");
+
+            label.textContent = definition.label
+                + " (" + definition.unit + ")";
+
+            label.htmlFor = feature + "-number";
+
+            const number = document.createElement("input");
+
+            number.type = "number";
+            number.step = "any";
+            number.id = feature + "-number";
+            number.value = String(initial);
+
+            if (
+                feature === "speed_kmh" ||
+                feature === "distance_to_intersection_m"
+            ) {
+                number.min = "0";
+            }
+
+            header.append(label, number);
+
+            const slider = document.createElement("input");
+
+            slider.type = "range";
+            slider.min = String(min);
+            slider.max = String(max);
+            slider.step = "any";
+            slider.value = String(initial);
+            slider.disabled = min === max;
+
+            slider.setAttribute(
+                "aria-label",
+                definition.label + " slider"
+            );
+
+            const rangeLabels = document.createElement("div");
+
+            rangeLabels.className = "range-labels";
+
+            const minimum = document.createElement("span");
+
+            minimum.textContent = format(
+                min, 3, definition.unit
+            );
+
+            const maximum = document.createElement("span");
+
+            maximum.textContent = format(
+                max, 3, definition.unit
+            );
+
+            rangeLabels.append(minimum, maximum);
+
+            slider.addEventListener("input", () => {
+
+                number.value = slider.value;
+
+                schedulePrediction();
+            });
+
+            number.addEventListener("input", () => {
+
+                if (Number.isFinite(number.valueAsNumber)) {
+
+                    slider.value = Math.max(
+                        min,
+                        Math.min(
+                            max, number.valueAsNumber
+                        )
+                    );
+                }
+
+                schedulePrediction();
+            });
+
+            wrapper.append(header, slider, rangeLabels);
+
+            $("controls").appendChild(wrapper);
+
+            controls.set(feature, {
+                number,
+                slider,
+                initial,
+                min,
+                max
+            });
+        }
+
+
+        function getInputs() {
+
+            const payload = {};
+
+            for (const feature of modelInfo.features) {
+
+                const control = controls.get(feature);
+
+                const value = control.number.valueAsNumber;
+
+                if (!Number.isFinite(value)) {
+
+                    throw new Error(
+                        "Invalid input: " + feature
+                    );
+                }
+
+                if (
+                    (
+                        feature === "speed_kmh" ||
+                        feature === "distance_to_intersection_m"
+                    )
+                    && value < 0
+                ) {
+                    throw new Error(
+                        "Speed and intersection distance " +
+                        "cannot be negative."
+                    );
+                }
+
+                payload[feature] = value;
+            }
+
+            return payload;
+        }
+
+
+        function clearResults() {
+
+            for (const id of [
+                "fuel-lps",
+                "fuel-lph",
+                "co2-gps",
+                "co2-kgh",
+                "domain-status"
+            ]) {
+
+                $(id).textContent = "--";
+            }
+
+            $("warnings").style.display = "none";
+
+            $("warning-list").replaceChildren();
+        }
+
+
+        function invalidatePredictions() {
+
+            generation++;
+
+            clearTimeout(timer);
+
+            if (controller) {
+
+                controller.abort();
+
+                controller = null;
+            }
+
+            clearResults();
+
+            return generation;
+        }
+
+
+        function renderPrediction(data) {
+
+            $("fuel-lps").textContent = format(
+                data.fuel_rate_lps, 6, "L/s"
+            );
+
+            $("fuel-lph").textContent = format(
+                data.fuel_rate_lph, 3, "L/h"
+            );
+
+            $("co2-gps").textContent = format(
+                data.co2_rate_gps, 3, "g/s"
+            );
+
+            $("co2-kgh").textContent = format(
+                data.co2_rate_gps * 3.6, 3, "kg/h"
+            );
+
+            $("domain-status").textContent =
+                data.within_training_range
+                    ? "Within range"
+                    : "Out of range";
+
+            $("domain-status").style.color =
+                data.within_training_range
+                    ? "#10B981"
+                    : "#F59E0B";
+
+            $("warning-list").replaceChildren();
+
+            const warnings = data.warnings || [];
+
+            for (const warning of warnings) {
+
+                const item = document.createElement("li");
+
+                item.textContent = warning;
+
+                $("warning-list").appendChild(item);
+            }
+
+            $("warnings").style.display =
+                warnings.length ? "block" : "none";
+        }
+
+
+        async function runPrediction() {
+
+            if (!modelInfo) return;
+
+            const currentGeneration =
+                invalidatePredictions();
+
+            let payload;
+
+            try {
+
+                payload = getInputs();
+
+            } catch (error) {
+
+                setStatus(error.message, true);
+
+                return;
+            }
+
+            const localController = new AbortController();
+
+            controller = localController;
+
+            const strict = $("strict").checked;
+
+            setStatus("Calculating prediction...");
+
+            try {
+
+                const result = await request(
+                    "/predict?strict=" + strict,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify(payload),
+
+                        signal: localController.signal
+                    }
+                );
+
+                if (currentGeneration !== generation) {
+                    return;
+                }
+
+                renderPrediction(result);
+
+                setStatus(
+                    "Prediction generated successfully."
+                );
+
+            } catch (error) {
+
+                if (
+                    error.name === "AbortError" ||
+                    currentGeneration !== generation
+                ) {
+                    return;
+                }
+
+                clearResults();
+
+                setStatus(error.message, true);
+
+            } finally {
+
+                if (controller === localController) {
+
+                    controller = null;
+                }
+            }
+        }
+
+
+        function schedulePrediction() {
+
+            invalidatePredictions();
+
+            if (!modelInfo) return;
+
+            if (!$("live").checked) {
+
+                setStatus(
+                    "Inputs updated. Click Predict Fuel."
+                );
+
+                return;
+            }
+
+            setStatus("Inputs updated...");
+
+            timer = setTimeout(
+                runPrediction,
+                350
+            );
+        }
+
+
+        function resetControls() {
+
+            for (const control of controls.values()) {
+
+                control.number.value =
+                    String(control.initial);
+
+                control.slider.value =
+                    String(control.initial);
+            }
+
+            schedulePrediction();
+        }
+
+
+        async function initialize() {
+
+            try {
+
+                modelInfo = await request("/model/info");
+
+                for (const feature of modelInfo.features) {
+
+                    createControl(
+                        feature,
+                        modelInfo.feature_domain[feature]
+                    );
+                }
+
+                $("model-name").textContent =
+                    modelInfo.model_name
+                        .replace(/_/g, " ")
+                        .replace(/\b\w/g,
+                            char => char.toUpperCase()
+                        );
+
+                const test = modelInfo.test_metrics || {};
+
+                const trajectory =
+                    modelInfo.trajectory_metrics || {};
+
+                $("test-r2").textContent = format(
+                    test.r2, 4
+                );
+
+                $("test-rmse").textContent = format(
+                    test.rmse, 6, "L/s"
+                );
+
+                $("trajectory-wape").textContent = format(
+                    trajectory.trajectory_wape_percent,
+                    2,
+                    "%"
+                );
+
+                $("predict").disabled = false;
+                $("reset").disabled = false;
+
+                setStatus("Prediction engine ready.");
+
+                await runPrediction();
+
+            } catch (error) {
+
+                modelInfo = null;
+
+                $("controls").replaceChildren();
+
+                setStatus(
+                    "Initialization failed: " + error.message,
+                    true
+                );
+            }
+        }
+
+
+        $("predict").onclick = runPrediction;
+
+        $("reset").onclick = resetControls;
+
+        $("live").onchange = schedulePrediction;
+
+        $("strict").onchange = schedulePrediction;
+
+        initialize();
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,2 @@
+observed_savings_percent,bootstrap_mean_percent,ci_lower_95,ci_upper_95,valid_iterations,random_seed
+6.992773370475004,6.990839821427842,4.191619003750586,9.671659766082666,5000,42

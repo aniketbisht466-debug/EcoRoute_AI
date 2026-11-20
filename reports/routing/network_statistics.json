@@ -1,0 +1,9 @@
+{
+    "city": "Noida, Uttar Pradesh, India",
+    "nodes": 15855,
+    "directed_edges": 38738,
+    "directed_edge_length_km": 3710.435,
+    "mean_edge_speed_kmh": 22.22,
+    "strongly_connected": false,
+    "network_type": "drive"
+}

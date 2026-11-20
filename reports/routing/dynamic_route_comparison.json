@@ -1,0 +1,50 @@
+[
+    {
+        "route_type": "shortest",
+        "distance_km": 9.975017434213036,
+        "simulated_duration_minutes": 17.603130811509434,
+        "average_speed_kmh": 33.99969314898603,
+        "maximum_speed_kmh": 35.0,
+        "mapped_signal_stops": 0,
+        "observations": 1057,
+        "out_of_domain_observations": 266,
+        "domain_coverage_percent": 74.83443708609272,
+        "estimated_fuel_l": null,
+        "estimated_co2_kg": null,
+        "fuel_l_per_100km": null,
+        "tail_duration_s": 0.1878486905659429,
+        "estimation_mode": "dynamic_driving_simulation"
+    },
+    {
+        "route_type": "fastest",
+        "distance_km": 11.993461273801968,
+        "simulated_duration_minutes": 15.293531267226827,
+        "average_speed_kmh": 47.053075176313044,
+        "maximum_speed_kmh": 95.71777359210326,
+        "mapped_signal_stops": 0,
+        "observations": 918,
+        "out_of_domain_observations": 121,
+        "domain_coverage_percent": 86.81917211328975,
+        "estimated_fuel_l": null,
+        "estimated_co2_kg": null,
+        "fuel_l_per_100km": null,
+        "tail_duration_s": 0.6118760336096329,
+        "estimation_mode": "dynamic_driving_simulation"
+    },
+    {
+        "route_type": "eco",
+        "distance_km": 9.975017434213036,
+        "simulated_duration_minutes": 17.603130811509434,
+        "average_speed_kmh": 33.99969314898603,
+        "maximum_speed_kmh": 35.0,
+        "mapped_signal_stops": 0,
+        "observations": 1057,
+        "out_of_domain_observations": 266,
+        "domain_coverage_percent": 74.83443708609272,
+        "estimated_fuel_l": null,
+        "estimated_co2_kg": null,
+        "fuel_l_per_100km": null,
+        "tail_duration_s": 0.1878486905659429,
+        "estimation_mode": "dynamic_driving_simulation"
+    }
+]

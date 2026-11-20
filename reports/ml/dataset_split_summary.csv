@@ -1,0 +1,4 @@
+partition,observations,row_percentage,trajectories,baseline_trajectories,eco_trajectories
+train,129614,68.32865908947136,388,145,243
+validation,28756,15.159310882904919,83,31,52
+test,31322,16.512030027623727,84,32,52

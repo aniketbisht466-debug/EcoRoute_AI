@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>EcoRoute AI | Research Analytics</title>
+
+    <style>
+        :root {
+            --bg: #080F19;
+            --surface: #111C2E;
+            --border: #263449;
+            --text: #F1F5F9;
+            --muted: #94A3B8;
+            --green: #10B981;
+            --blue: #38BDF8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        header {
+            padding: 22px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            background: #0B1220;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+
+        .brand {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--green);
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 11px;
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        nav a.active,
+        nav a:hover {
+            color: var(--green);
+        }
+
+        main {
+            max-width: 1600px;
+            margin: auto;
+            padding: 30px 5%;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .description {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .kpis {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(190px, 1fr));
+            gap: 16px;
+            margin: 28px 0;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .kpi-label {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .kpi-value {
+            color: var(--green);
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .composition {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .donut {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin: 20px auto;
+            background: #263449;
+            display: grid;
+            place-items: center;
+        }
+
+        .donut-center {
+            background: var(--surface);
+            width: 135px;
+            height: 135px;
+            border-radius: 50%;
+            display: grid;
+            place-content: center;
+            text-align: center;
+        }
+
+        .donut-center strong {
+            font-size: 32px;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 18px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .dot {
+            display: inline-block;
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin: 30px 0 20px;
+            flex-wrap: wrap;
+        }
+
+        button,
+        select {
+            background: #111C2E;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 18px;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        button.active {
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(min(100%, 350px), 1fr));
+            gap: 18px;
+        }
+
+        .figure {
+            padding: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .figure img {
+            display: block;
+            width: 100%;
+            border-radius: 8px;
+            cursor: zoom-in;
+        }
+
+        .figure-title {
+            font-size: 13px;
+            color: var(--muted);
+            padding: 12px 4px 4px;
+        }
+
+        .table-container {
+            overflow: auto;
+            max-height: 600px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        td,
+        th {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        th {
+            position: sticky;
+            top: 0;
+            background: #1E293B;
+            color: var(--green);
+        }
+
+        tr:hover td {
+            background: #1A293C;
+        }
+
+        .report-section {
+            margin: 30px 0;
+        }
+
+        .report-section select {
+            max-width: 100%;
+        }
+
+        pre {
+            color: #CBD5E1;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            font-size: 12px;
+        }
+
+        dialog {
+            width: min(95vw, 1200px);
+            max-height: 95vh;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+        }
+
+        dialog::backdrop {
+            background: rgba(0, 0, 0, .85);
+        }
+
+        dialog img {
+            width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+
+        footer {
+            text-align: center;
+            padding: 24px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        #error {
+            color: #F43F5E;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <header>
+
+        <div>
+
+            <div class="brand">EcoRoute AI</div>
+
+            <div class="subtitle">
+                INTELLIGENT FREIGHT MOBILITY
+            </div>
+
+        </div>
+
+        <nav>
+
+            <a href="/dashboard">
+                Route Planner
+            </a>
+
+            <a href="/fuel-lab">
+                Fuel Lab
+            </a>
+
+            <a href="/analytics" class="active">
+                Research Analytics
+            </a>
+
+            <a href="/docs">
+                API Documentation
+            </a>
+
+        </nav>
+
+    </header>
+
+    <main>
+
+        <h1>Research Analytics</h1>
+
+        <p class="description">
+            Explore truck telemetry, eco-driving behaviour,
+            model performance and routing reports generated
+            by the EcoRoute AI research pipeline.
+        </p>
+
+        <p id="error" role="alert"></p>
+
+        <section class="kpis">
+
+            <div class="card">
+                <div class="kpi-label">
+                    Telemetry Observations
+                </div>
+                <div class="kpi-value" id="observations">
+                    --
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="kpi-label">
+                    Total Trajectories
+                </div>
+                <div class="kpi-value" id="trajectories">
+                    --
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="kpi-label">
+                    Generated Reports
+                </div>
+                <div class="kpi-value" id="reports">
+                    --
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="kpi-label">
+                    Scientific Visualizations
+                </div>
+                <div class="kpi-value" id="figures">
+                    --
+                </div>
+            </div>
+
+        </section>
+
+        <section class="composition">
+
+            <div class="card">
+
+                <h2>Dataset Composition</h2>
+
+                <div class="donut" id="donut">
+
+                    <div class="donut-center">
+
+                        <strong id="donut-total">--</strong>
+
+                        <small>Trajectories</small>
+
+                    </div>
+
+                </div>
+
+                <div class="legend">
+
+                    <span>
+                        <i class="dot" style="background:#38BDF8"></i>
+
+                        <span id="baseline">Baseline</span>
+                    </span>
+
+                    <span>
+                        <i class="dot" style="background:#10B981"></i>
+
+                        <span id="eco">Eco-driving</span>
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <h2>Telemetry Statistics</h2>
+
+                <p class="description">Average speed</p>
+                <h2 id="average-speed">--</h2>
+
+                <p class="description">Maximum speed</p>
+                <h2 id="maximum-speed">--</h2>
+
+                <p class="description">Average fuel rate</p>
+                <h2 id="fuel-rate">--</h2>
+
+            </div>
+
+        </section>
+
+        <div class="tabs">
+
+            <button data-group="eda" class="active">
+                Exploratory Analysis
+            </button>
+
+            <button data-group="ml">
+                Model Performance
+            </button>
+
+            <button data-group="routing">
+                Routing Analytics
+            </button>
+            <button data-group="xai">
+                Explainable AI
+            </button>
+
+        </div>
+
+        <h2 id="gallery-heading">
+            Scientific Visualizations
+        </h2>
+
+        <div class="gallery" id="gallery"></div>
+
+        <section class="card report-section">
+
+            <h2>Research Report Explorer</h2>
+
+            <select id="report-picker">
+                <option value="">Select a report</option>
+            </select>
+
+            <p class="description" id="report-info"></p>
+
+            <div class="table-container" id="report-content">
+            </div>
+
+        </section>
+
+    </main>
+
+    <dialog id="preview">
+
+        <button id="close-preview">Close Preview</button>
+
+        <h3 id="preview-title"></h3>
+
+        <img id="preview-image" alt="Scientific figure">
+
+    </dialog>
+
+    <footer>
+
+        EcoRoute AI · Research and Simulation Platform
+
+    </footer>
+
+    <script>
+
+        const $ = id => document.getElementById(id);
+
+        let overview = null;
+        let activeGroup = "eda";
+        let requestId = 0;
+
+
+        async function getJSON(url) {
+
+            const response = await fetch(url);
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Request failed: " + response.status
+                );
+            }
+
+            return response.json();
+        }
+
+
+        function humanize(filename) {
+
+            return filename
+                .replace(/\.[^.]+$/, "")
+                .replace(/_/g, " ")
+                .replace(/\b\w/g, char => char.toUpperCase());
+        }
+
+
+        function format(value, decimals = 2) {
+
+            if (value === null || value === undefined) {
+                return "N/A";
+            }
+
+            if (typeof value === "number") {
+
+                return value.toLocaleString(undefined, {
+                    maximumFractionDigits: decimals
+                });
+            }
+
+            if (typeof value === "object") {
+                return JSON.stringify(value);
+            }
+
+            return String(value);
+        }
+
+
+        async function loadDataset() {
+
+            const data = await getJSON("/analytics/dataset");
+
+            $("observations").textContent =
+                format(data.observations);
+
+            $("trajectories").textContent =
+                format(data.trajectories);
+
+            $("donut-total").textContent =
+                format(data.trajectories);
+
+            $("baseline").textContent =
+                "Baseline: " + data.baseline_trajectories;
+
+            $("eco").textContent =
+                "Eco: " + data.eco_trajectories;
+
+            const total =
+                data.baseline_trajectories +
+                data.eco_trajectories;
+
+            const ecoPercent = total > 0
+                ? data.eco_trajectories / total * 100
+                : 0;
+
+            $("donut").style.background =
+                `conic-gradient(
+            #10B981 0% ${ecoPercent}%,
+            #38BDF8 ${ecoPercent}% 100%
+        )`;
+
+            $("average-speed").textContent =
+                format(data.mean_speed_kmh) + " km/h";
+
+            $("maximum-speed").textContent =
+                format(data.maximum_speed_kmh) + " km/h";
+
+            $("fuel-rate").textContent =
+                format(data.mean_fuel_rate_lps, 6) + " L/s";
+        }
+
+
+        function openPreview(url, title) {
+
+            $("preview-image").src = url;
+
+            $("preview-title").textContent = title;
+
+            $("preview").showModal();
+        }
+
+
+        $("close-preview").onclick = () => {
+
+            $("preview").close();
+        };
+
+
+        function renderCategory(group) {
+
+            activeGroup = group;
+
+            requestId++;
+
+            document.querySelectorAll("[data-group]")
+                .forEach(button => {
+
+                    button.classList.toggle(
+                        "active",
+                        button.dataset.group === group
+                    );
+                });
+
+            const category = overview.categories[group];
+
+            const gallery = $("gallery");
+
+            gallery.replaceChildren();
+
+            $("gallery-heading").textContent = {
+                eda: "Exploratory Data Analysis",
+                ml: "Machine Learning Visualizations",
+                routing: "Routing Visualizations",
+                xai: "Explainable AI"
+            }[group];
+
+            for (const filename of category.figures) {
+
+                const url =
+                    `/analytics/figures/${group}/` +
+                    encodeURIComponent(filename);
+
+                const card = document.createElement("div");
+
+                card.className = "figure";
+
+                const image = document.createElement("img");
+
+                image.src = url;
+
+                image.loading = "lazy";
+
+                image.alt = humanize(filename);
+
+                image.onclick = () => {
+                    openPreview(url, humanize(filename));
+                };
+
+                const title = document.createElement("div");
+
+                title.className = "figure-title";
+
+                title.textContent = humanize(filename);
+
+                card.append(image, title);
+
+                gallery.appendChild(card);
+            }
+
+            if (!category.figures.length) {
+
+                gallery.textContent =
+                    "No generated figures in this category.";
+            }
+
+            const picker = $("report-picker");
+
+            picker.replaceChildren(
+                new Option("Select a report", "")
+            );
+
+            for (const filename of category.reports) {
+
+                picker.add(
+                    new Option(
+                        humanize(filename),
+                        filename
+                    )
+                );
+            }
+
+            $("report-content").replaceChildren();
+
+            $("report-info").textContent = "";
+        }
+
+
+        async function loadReport() {
+
+            const filename = $("report-picker").value;
+
+            const currentRequest = ++requestId;
+
+            const container = $("report-content");
+
+            container.replaceChildren();
+
+            $("report-info").textContent = "";
+
+            if (!filename) return;
+
+            try {
+
+                const report = await getJSON(
+                    `/analytics/reports/${activeGroup}/` +
+                    encodeURIComponent(filename)
+                );
+
+                if (currentRequest !== requestId) return;
+
+                if (!Array.isArray(report.rows)) {
+
+                    const pre = document.createElement("pre");
+
+                    pre.textContent =
+                        JSON.stringify(report, null, 2);
+
+                    container.appendChild(pre);
+
+                    return;
+                }
+
+                $("report-info").textContent =
+                    `Displaying ${report.displayed_rows}
+             of ${report.total_rows} rows.`;
+
+                const table = document.createElement("table");
+
+                const header = table.createTHead()
+                    .insertRow();
+
+                for (const column of report.columns) {
+
+                    const th = document.createElement("th");
+
+                    th.textContent = humanize(column);
+
+                    header.appendChild(th);
+                }
+
+                const body = table.createTBody();
+
+                for (const record of report.rows) {
+
+                    const row = body.insertRow();
+
+                    for (const column of report.columns) {
+
+                        const cell = row.insertCell();
+
+                        cell.textContent = format(
+                            record[column], 6
+                        );
+                    }
+                }
+
+                container.appendChild(table);
+
+            } catch (error) {
+
+                if (currentRequest !== requestId) return;
+
+                $("report-info").textContent =
+                    error.message;
+            }
+        }
+
+
+        $("report-picker").onchange = loadReport;
+
+
+        document.querySelectorAll("[data-group]")
+            .forEach(button => {
+
+                button.onclick = () => {
+
+                    if (overview) {
+
+                        renderCategory(
+                            button.dataset.group
+                        );
+                    }
+                };
+            });
+
+
+        async function initialize() {
+
+            try {
+
+                overview = await getJSON(
+                    "/analytics/overview"
+                );
+
+                $("reports").textContent =
+                    overview.total_reports;
+
+                $("figures").textContent =
+                    overview.total_figures;
+
+                renderCategory("eda");
+
+            } catch (error) {
+
+                $("error").textContent =
+                    "Analytics unavailable: " + error.message;
+            }
+
+            try {
+
+                await loadDataset();
+
+            } catch (error) {
+
+                $("error").textContent +=
+                    " Dataset unavailable: " + error.message;
+            }
+        }
+
+
+        initialize();
+
+    </script>
+
+</body>
+
+</html>

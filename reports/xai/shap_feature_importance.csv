@@ -1,0 +1,5 @@
+feature,mean_absolute_shap,mean_shap
+acceleration_ms2,0.0016291224,-6.365663e-05
+speed_kmh,0.00079511927,-8.091178e-06
+jerk_ms3,0.00023742855,-1.6647566e-05
+distance_to_intersection_m,6.675086e-05,8.100632e-06

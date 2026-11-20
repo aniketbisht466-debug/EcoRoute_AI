@@ -1,0 +1,6 @@
+{
+    "model": "xgboost",
+    "explanation_dataset": "validation",
+    "shap_status": "completed",
+    "permutation_status": "completed"
+}

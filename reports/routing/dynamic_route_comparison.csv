@@ -1,0 +1,4 @@
+route_type,distance_km,simulated_duration_minutes,average_speed_kmh,maximum_speed_kmh,mapped_signal_stops,observations,out_of_domain_observations,domain_coverage_percent,estimated_fuel_l,estimated_co2_kg,fuel_l_per_100km,tail_duration_s,estimation_mode
+shortest,9.975017434213036,17.603130811509434,33.99969314898603,35.0,0,1057,266,74.83443708609272,,,,0.1878486905659429,dynamic_driving_simulation
+fastest,11.993461273801968,15.293531267226827,47.053075176313044,95.71777359210326,0,918,121,86.81917211328975,,,,0.6118760336096329,dynamic_driving_simulation
+eco,9.975017434213036,17.603130811509434,33.99969314898603,35.0,0,1057,266,74.83443708609272,,,,0.1878486905659429,dynamic_driving_simulation

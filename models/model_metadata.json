@@ -1,0 +1,27 @@
+{
+    "project": "EcoRoute AI",
+    "status": "validation_selected_candidate",
+    "model_name": "random_forest",
+    "features": [
+        "speed_kmh",
+        "acceleration_ms2",
+        "jerk_ms3",
+        "distance_to_intersection_m"
+    ],
+    "target": "fuel_rate_lps",
+    "selection_metric": "validation_rmse",
+    "validation_mae": 0.0005337910092426127,
+    "validation_rmse": 0.0009348493893832614,
+    "validation_r2": 0.8890653545230018,
+    "rmse_improvement_percent": 66.70046624456296,
+    "random_seed": 42,
+    "test_evaluated": false,
+    "versions": {
+        "python": "3.13.17",
+        "scikit_learn": "1.9.1",
+        "xgboost": "3.4.1",
+        "pandas": "3.1.1",
+        "numpy": "2.5.5",
+        "joblib": "1.6.0"
+    }
+}

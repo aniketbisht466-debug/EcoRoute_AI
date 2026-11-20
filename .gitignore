@@ -1,0 +1,85 @@
+# Virtual environment
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Environment variables and secrets
+.env
+.streamlit/secrets.toml
+
+# Trained models
+*.pkl
+*.joblib
+
+# Testing cache
+.pytest_cache/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Python environment
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE settings
+.vscode/
+.idea/
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Large datasets
+/data/raw/
+/data/external/
+/data/processed/
+/data/ml/
+
+# Map caches
+/data/cache/
+/data/maps/
+
+# Trained model binaries
+/models/*.joblib
+/models/*.pkl
+/models/*.ubj
+
+# Temporary files
+*.tmp
+*.log
+
+# Operating system
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Test caches
+.pytest_cache/
+.coverage
+# Generated telemetry and prediction records
+/reports/ml/*predictions.csv
+/reports/ml/trajectory_split_manifest.csv
+/reports/ml/trajectory_prediction_metrics.csv
+/reports/xai/shap_values.csv
+/reports/xai/shap_input_sample.csv
+/reports/routing/*_driving_profile.csv
+/reports/eda/bootstrap_samples.csv
+/reports/eda/trajectory_summary.csv
+/reports/eda/scientific_eda_report.html
+/assets/figures/routing/*.html

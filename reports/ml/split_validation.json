@@ -1,0 +1,10 @@
+{
+    "train_validation_overlap": true,
+    "train_test_overlap": true,
+    "validation_test_overlap": true,
+    "all_trajectories_preserved": true,
+    "all_rows_preserved": true,
+    "target_not_in_features": true,
+    "finite_model_values": true,
+    "all_partitions_have_both_scenarios": true
+}

@@ -1,0 +1,9 @@
+{
+    "trajectories": 84,
+    "actual_total_fuel_l": 82.70030249999999,
+    "predicted_total_fuel_l": 82.26152707200353,
+    "total_fuel_bias_percent": -0.5305608501207854,
+    "trajectory_mae_l": 0.04519881945500831,
+    "trajectory_mape_percent": 5.135283037192554,
+    "trajectory_wape_percent": 4.590915292263531
+}

@@ -1,0 +1,17 @@
+{
+    "dataset_name": "Dryad Heavy-Duty Truck Trajectories",
+    "dataset_source": "dryad_truck",
+    "sampling_interval_seconds": 1.0,
+    "speed_unit": "mph",
+    "fuel_rate_unit": "litres_per_second",
+    "intersection_distance_unit": "metres",
+    "metadata_verified": true,
+    "mph_to_kmh": 1.609344,
+    "mph_to_ms": 0.44704,
+    "diesel_co2_kg_per_litre": 2.68,
+    "driving_state_thresholds": {
+        "stationary_speed_kmh": 0.5,
+        "acceleration_ms2": 0.2,
+        "deceleration_ms2": -0.2
+    }
+}

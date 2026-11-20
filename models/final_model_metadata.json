@@ -1,0 +1,74 @@
+{
+    "project": "EcoRoute AI",
+    "version": "1.0",
+    "status": "held_out_test_evaluated",
+    "model_name": "xgboost",
+    "candidate_name": "xgboost_optimized",
+    "training_observations": 158370,
+    "training_trajectories": 471,
+    "features": [
+        "speed_kmh",
+        "acceleration_ms2",
+        "jerk_ms3",
+        "distance_to_intersection_m"
+    ],
+    "target": "fuel_rate_lps",
+    "validation_rmse_before_refit": 0.0009274050657823412,
+    "test_metrics": {
+        "mae": 0.0005433654070009856,
+        "rmse": 0.0009379333145422009,
+        "r2": 0.8862522275290861,
+        "bias": -1.4341648789721298e-05,
+        "median_absolute_error": 0.0002642188955470919,
+        "observations": 31322
+    },
+    "trajectory_metrics": {
+        "trajectories": 84,
+        "actual_total_fuel_l": 82.70030249999999,
+        "predicted_total_fuel_l": 82.26152707200353,
+        "total_fuel_bias_percent": -0.5305608501207854,
+        "trajectory_mae_l": 0.04519881945500831,
+        "trajectory_mape_percent": 5.135283037192554,
+        "trajectory_wape_percent": 4.590915292263531
+    },
+    "feature_domain": {
+        "speed_kmh": {
+            "min": 0.0,
+            "max": 90.44513280000001,
+            "p01": 0.0,
+            "p99": 80.9500032,
+            "median": 55.03956480000001
+        },
+        "acceleration_ms2": {
+            "min": -8.49376,
+            "max": 3.978655999999999,
+            "p01": -1.8775680000000001,
+            "p99": 1.7881599999999995,
+            "median": 0.0
+        },
+        "jerk_ms3": {
+            "min": -8.359648,
+            "max": 8.49376,
+            "p01": -1.2517119999999995,
+            "p99": 1.2964159999999998,
+            "median": 0.0
+        },
+        "distance_to_intersection_m": {
+            "min": 0.0,
+            "max": 2095.36,
+            "p01": 0.0,
+            "p99": 1623.91,
+            "median": 160.19
+        }
+    },
+    "model_sha256": "5c103aa947eb1d5e17df7a79e95bd3d674d9c2f9d1e23d3c41327ac135830d49",
+    "random_seed": 42,
+    "versions": {
+        "python": "3.13.17",
+        "scikit_learn": "1.9.1",
+        "xgboost": "3.4.1",
+        "numpy": "2.5.5",
+        "pandas": "3.1.1",
+        "joblib": "1.6.0"
+    }
+}

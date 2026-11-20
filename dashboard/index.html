@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EcoRoute AI | Intelligent Mobility</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+
+    <style>
+        :root {
+            --bg: #080F19;
+            --surface: #111C2E;
+            --border: #263449;
+            --green: #10B981;
+            --blue: #38BDF8;
+            --amber: #F59E0B;
+            --red: #F43F5E;
+            --text: #F1F5F9;
+            --muted: #94A3B8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 28px;
+            border-bottom: 1px solid var(--border);
+            background: #0B1220;
+        }
+
+        .brand {
+            font-size: 26px;
+            font-weight: 750;
+            color: var(--green);
+        }
+
+        .subtitle {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .status {
+            font-size: 11px;
+            color: var(--amber);
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 330px minmax(0, 1fr);
+            gap: 16px;
+            padding: 16px;
+        }
+
+        .sidebar {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 20px;
+            max-height: 820px;
+            overflow-y: auto;
+        }
+
+        h2 {
+            font-size: 19px;
+            margin: 0 0 20px;
+        }
+
+        h3 {
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: var(--muted);
+            margin: 10px 0 6px;
+        }
+
+        .coordinates {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        input {
+            width: 100%;
+            min-width: 0;
+            padding: 12px;
+            background: #0B1220;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            font-size: 13px;
+        }
+
+        input:focus {
+            border-color: var(--green);
+        }
+
+        button {
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .pick-button {
+            width: 100%;
+            margin-top: 8px;
+            padding: 9px;
+            color: var(--muted);
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .pick-button.active {
+            border-color: var(--green);
+            color: var(--green);
+            background: #10B98115;
+        }
+
+        .optimize-button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            background: var(--green);
+            color: #052E23;
+            border: none;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .optimize-button:hover {
+            background: #34D399;
+        }
+
+        button:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        .message {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+            margin-top: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 22px 0;
+        }
+
+        .route-card {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--route-color);
+            border-radius: 10px;
+            background: #0B1220;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .route-card.selected {
+            background: #1B2B3D;
+            border-color: var(--route-color);
+        }
+
+        .route-name {
+            color: var(--route-color);
+            font-weight: 650;
+            font-size: 14px;
+        }
+
+        .route-distance {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .route-details {
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        .recommended {
+            color: #34D399;
+            font-size: 10px;
+            margin: 6px 0;
+        }
+
+        .main {
+            min-width: 0;
+        }
+
+        .map-container {
+            position: relative;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 590px;
+            background: #0B1220;
+        }
+
+        .map-label {
+            position: absolute;
+            top: 15px;
+            left: 55px;
+            z-index: 500;
+            background: #111C2E;
+            border: 1px solid var(--border);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 11px;
+            color: var(--muted);
+            pointer-events: none;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 12px 18px;
+            background: var(--surface);
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .dot {
+            width: 9px;
+            height: 9px;
+            display: inline-block;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .metric {
+            padding: 18px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            border-radius: 12px;
+        }
+
+        .metric-label {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .metric-value {
+            margin-top: 8px;
+            font-size: clamp(18px, 2vw, 26px);
+            font-weight: 700;
+            color: var(--green);
+        }
+
+        .notice {
+            margin-top: 16px;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .leaflet-control-zoom a {
+            background: #111C2E !important;
+            color: white !important;
+            border-color: #334155 !important;
+        }
+
+        .leaflet-control-attribution {
+            background: #111C2E !important;
+            color: #94A3B8 !important;
+        }
+
+        .leaflet-control-attribution a {
+            color: #34D399 !important;
+        }
+
+        @media(max-width: 900px) {
+
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                max-height: none;
+            }
+
+            .metrics {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            #map {
+                height: 500px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+
+        <div>
+            <div class="brand">EcoRoute AI</div>
+            <div class="subtitle">
+                INTELLIGENT FREIGHT MOBILITY
+            </div>
+        </div>
+
+        <a href="/fuel-lab" style="
+       color:#10B981;
+       text-decoration:none;
+       border:1px solid #263449;
+       border-radius:8px;
+       padding:10px 18px;
+       font-size:13px;
+   ">
+            Fuel Lab
+        </a>
+
+        <a href="/analytics" style="
+       color:#10B981;
+       text-decoration:none;
+       border:1px solid #263449;
+       border-radius:8px;
+       padding:10px 18px;
+       font-size:13px;
+   ">
+            Research Analytics
+        </a>
+
+
+        <div class="status" id="system-status">
+            CONNECTING
+        </div>
+
+    </header>
+
+    <div class="workspace">
+
+        <aside class="sidebar">
+
+            <h2>Journey Planner</h2>
+
+            <label>Origin coordinates</label>
+
+            <div class="coordinates">
+                <input id="origin-lat" type="number" step="any" aria-label="Origin latitude" value="28.5708">
+                <input id="origin-lon" type="number" step="any" aria-label="Origin longitude" value="77.3261">
+            </div>
+
+            <button class="pick-button" id="pick-origin">
+                Select origin on map
+            </button>
+
+            <label>Destination coordinates</label>
+
+            <div class="coordinates">
+                <input id="destination-lat" type="number" step="any" aria-label="Destination latitude" value="28.5355">
+                <input id="destination-lon" type="number" step="any" aria-label="Destination longitude" value="77.3910">
+            </div>
+
+            <button class="pick-button" id="pick-destination">
+                Select destination on map
+            </button>
+            <div style="
+    margin-top:20px;
+    padding:12px;
+    background:#0B1220;
+    border:1px solid #263449;
+    border-radius:8px;
+">
+                <label style="
+        display:flex;
+        align-items:center;
+        gap:10px;
+        color:#34D399;
+        margin:0;
+    ">
+                    <input type="checkbox" id="dynamic-mode" style="width:auto;accent-color:#10B981" checked>
+                    Advanced Driving Simulation
+                </label>
+
+                <p style="
+        font-size:11px;
+        color:#94A3B8;
+        line-height:1.6;
+        margin-bottom:0;
+    ">
+                    Simulate acceleration, braking and
+                    mapped traffic signal delays.
+                </p>
+            </div>
+
+            <button class="optimize-button" id="optimize">
+                Optimize Routes
+            </button>
+
+            <div class="message" id="message" role="status">
+                Loading road network...
+            </div>
+
+            <div class="divider"></div>
+
+            <h2>Route Comparison</h2>
+
+            <div id="route-results">
+                <div class="message">
+                    Calculate a journey to compare routes.
+                </div>
+            </div>
+
+        </aside>
+
+        <main class="main">
+
+            <div class="map-container">
+
+                <div class="map-label">
+                    NOIDA · ROAD NETWORK
+                </div>
+
+                <div id="map"></div>
+
+                <div class="legend">
+
+                    <span>
+                        <i class="dot" style="background:#38BDF8"></i>
+                        Shortest
+                    </span>
+
+                    <span>
+                        <i class="dot" style="background:#F59E0B"></i>
+                        Fastest
+                    </span>
+
+                    <span>
+                        <i class="dot" style="background:#10B981"></i>
+                        Eco
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="metrics">
+
+                <div class="metric">
+                    <div class="metric-label">Distance</div>
+                    <div class="metric-value" id="distance">
+                        --
+                    </div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">
+                        Estimated travel time
+                    </div>
+                    <div class="metric-value" id="duration">
+                        --
+                    </div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">
+                        Estimated fuel
+                    </div>
+                    <div class="metric-value" id="fuel">
+                        --
+                    </div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">
+                        Estimated CO₂
+                    </div>
+                    <div class="metric-value" id="co2">
+                        --
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="notice" id="model-notice">
+                Research prototype. Fuel and emissions are
+                ML-based steady-speed simulations, not live
+                traffic predictions. Not intended for
+                operational truck navigation.
+            </div>
+
+            <section id="dynamic-panel" style="
+    display:none;
+    margin-top:20px;
+    padding:20px;
+    background:#111C2E;
+    border:1px solid #263449;
+    border-radius:14px;
+">
+
+                <h2>Advanced Driving Intelligence</h2>
+
+                <p style="
+        color:#94A3B8;
+        font-size:12px;
+        line-height:1.7;
+    ">
+                    Comparison of steady-speed estimates
+                    and dynamic driving simulations.
+                </p>
+
+                <div id="dynamic-results"></div>
+
+                <p style="
+        color:#94A3B8;
+        font-size:11px;
+        line-height:1.7;
+    ">
+                    Simulation assumptions: 0.7 m/s² acceleration,
+                    1.2 m/s² deceleration and 15-second waits
+                    at recognized traffic signals.
+                    Unsupported fuel estimates are withheld.
+                </p>
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+    <script>
+
+        const $ = id => document.getElementById(id);
+
+        const colors = {
+            shortest: "#38BDF8",
+            fastest: "#F59E0B",
+            eco: "#10B981"
+        };
+
+        const labels = {
+            shortest: "Shortest Route",
+            fastest: "Fastest Route",
+            eco: "Eco Route"
+        };
+
+        let pickMode = null;
+        let currentResult = null;
+        let activeRoute = null;
+        let busy = false;
+        let ready = false;
+
+        const map = L.map("map", {
+            zoomControl: true,
+            preferCanvas: true,
+            minZoom: 9,
+            maxZoom: 19
+        }).setView([28.555, 77.36], 12);
+
+        map.attributionControl.setPrefix(false);
+
+        map.attributionControl.addAttribution(
+            '&copy; <a href="https://www.openstreetmap.org/copyright">' +
+            'OpenStreetMap contributors</a>'
+        );
+
+        map.createPane("roads");
+        map.getPane("roads").style.zIndex = 350;
+
+        map.createPane("routes");
+        map.getPane("routes").style.zIndex = 450;
+
+        const roadLayer = L.layerGroup().addTo(map);
+        const routeLayer = L.layerGroup().addTo(map);
+
+        const originMarker = L.circleMarker(
+            [28.5708, 77.3261],
+            {
+                radius: 9,
+                color: "#FFFFFF",
+                weight: 2,
+                fillColor: "#10B981",
+                fillOpacity: 1
+            }
+        ).bindTooltip("Origin").addTo(map);
+
+        const destinationMarker = L.circleMarker(
+            [28.5355, 77.3910],
+            {
+                radius: 9,
+                color: "#FFFFFF",
+                weight: 2,
+                fillColor: "#F43F5E",
+                fillOpacity: 1
+            }
+        ).bindTooltip("Destination").addTo(map);
+
+
+        function setMessage(text, error = false) {
+
+            $("message").textContent = text;
+
+            $("message").style.color =
+                error ? "#F43F5E" : "#94A3B8";
+        }
+
+
+        function readLocation(prefix) {
+
+            const latitude =
+                $(prefix + "-lat").valueAsNumber;
+
+            const longitude =
+                $(prefix + "-lon").valueAsNumber;
+
+            if (!Number.isFinite(latitude) ||
+                !Number.isFinite(longitude) ||
+                Math.abs(latitude) > 90 ||
+                Math.abs(longitude) > 180) {
+
+                throw new Error(
+                    "Enter valid latitude and longitude."
+                );
+            }
+
+            return { latitude, longitude };
+        }
+
+
+        function updateMarkers() {
+
+            const origin = readLocation("origin");
+
+            const destination =
+                readLocation("destination");
+
+            originMarker.setLatLng([
+                origin.latitude,
+                origin.longitude
+            ]);
+
+            destinationMarker.setLatLng([
+                destination.latitude,
+                destination.longitude
+            ]);
+        }
+
+
+        function resetResults() {
+            $("dynamic-panel").style.display = "none";
+
+            $("dynamic-results").replaceChildren();
+
+            currentResult = null;
+            activeRoute = null;
+
+            routeLayer.clearLayers();
+
+            $("route-results").textContent =
+                "Calculate routes for the selected locations.";
+
+            for (const id of [
+                "distance", "duration", "fuel", "co2"
+            ]) {
+                $(id).textContent = "--";
+            }
+
+            $("model-notice").textContent =
+                "Research prototype. Routes require calculation.";
+        }
+
+
+        function setPickMode(mode) {
+
+            if (busy) return;
+
+            pickMode = mode;
+
+            $("pick-origin").classList.toggle(
+                "active", mode === "origin"
+            );
+
+            $("pick-destination").classList.toggle(
+                "active", mode === "destination"
+            );
+
+            setMessage(
+                mode
+                    ? "Click on the map to select " + mode + "."
+                    : "Locations updated."
+            );
+        }
+
+
+        $("pick-origin").onclick = () =>
+            setPickMode("origin");
+
+        $("pick-destination").onclick = () =>
+            setPickMode("destination");
+
+
+        map.on("click", event => {
+
+            if (!pickMode || busy) return;
+
+            $(pickMode + "-lat").value =
+                event.latlng.lat.toFixed(6);
+
+            $(pickMode + "-lon").value =
+                event.latlng.lng.toFixed(6);
+
+            updateMarkers();
+            resetResults();
+            setPickMode(null);
+        });
+
+
+        document.querySelectorAll("input").forEach(input => {
+
+            input.addEventListener("change", () => {
+
+                resetResults();
+
+                try {
+                    updateMarkers();
+                } catch (error) {
+                    setMessage(error.message, true);
+                }
+            });
+        });
+
+
+        function format(value, decimals, unit = "") {
+
+            if (value === null ||
+                value === undefined ||
+                !Number.isFinite(Number(value))) {
+
+                return "N/A";
+            }
+
+            return Number(value).toFixed(decimals)
+                + (unit ? " " + unit : "");
+        }
+
+
+        async function request(url, options = {}) {
+
+            const response = await fetch(url, options);
+
+            if (!response.ok) {
+
+                const error = await response.json()
+                    .catch(() => ({}));
+
+                throw new Error(
+                    typeof error.detail === "string"
+                        ? error.detail
+                        : "Request failed: " + response.status
+                );
+            }
+
+            return response.json();
+        }
+
+
+        async function loadNetwork() {
+
+            $("optimize").disabled = true;
+
+            try {
+
+                const data = await request("/routing/network");
+
+                const roads = L.geoJSON(data, {
+                    pane: "roads",
+                    interactive: false,
+                    style: {
+                        color: "#475569",
+                        weight: 1.2,
+                        opacity: 0.7
+                    }
+                });
+
+                roads.addTo(roadLayer);
+
+                if (roads.getBounds().isValid()) {
+                    map.fitBounds(roads.getBounds());
+                }
+
+                ready = true;
+
+                $("system-status").textContent =
+                    "● SYSTEM READY";
+
+                $("system-status").style.color =
+                    "#34D399";
+
+                setMessage(
+                    "Select locations or use the default journey."
+                );
+
+            } catch (error) {
+
+                $("system-status").textContent =
+                    "NETWORK UNAVAILABLE";
+
+                $("system-status").style.color =
+                    "#F43F5E";
+
+                setMessage(error.message, true);
+
+            } finally {
+
+                $("optimize").disabled = !ready;
+            }
+        }
+
+        function renderDynamicResults() {
+
+            const panel = $("dynamic-panel");
+            const container = $("dynamic-results");
+
+            container.replaceChildren();
+
+            const simulation =
+                currentResult?.dynamic_simulation;
+
+            if (!simulation) {
+
+                panel.style.display = "none";
+
+                return;
+            }
+
+            panel.style.display = "block";
+
+            for (const [name, dynamic] of Object.entries(
+                simulation.routes
+            )) {
+
+                const steady =
+                    currentResult.routes[name].metrics;
+
+                const card = document.createElement("div");
+
+                card.style.cssText = `
+            background:#0B1220;
+            border:1px solid #263449;
+            border-left:3px solid ${colors[name]};
+            padding:16px;
+            border-radius:10px;
+            margin-top:12px;
+        `;
+
+                if (dynamic.status !== "completed") {
+
+                    const message =
+                        document.createElement("p");
+
+                    message.textContent =
+                        labels[name] + ": " +
+                        (dynamic.reason || "Simulation unavailable");
+
+                    card.appendChild(message);
+
+                    container.appendChild(card);
+
+                    continue;
+                }
+
+                const coverage =
+                    dynamic.domain_coverage_percent;
+
+                const coverageColor =
+                    coverage >= 100 ? "#10B981" : "#F59E0B";
+
+                const rows = [
+
+                    [
+                        "Travel time",
+                        format(steady.duration_minutes, 2, "min"),
+                        format(
+                            dynamic.simulated_duration_minutes,
+                            2, "min"
+                        )
+                    ],
+
+                    [
+                        "Fuel consumption",
+                        format(steady.estimated_fuel_l, 3, "L"),
+                        format(dynamic.estimated_fuel_l, 3, "L")
+                    ],
+
+                    [
+                        "CO₂ emissions",
+                        format(steady.estimated_co2_kg, 3, "kg"),
+                        format(dynamic.estimated_co2_kg, 3, "kg")
+                    ]
+                ];
+
+                card.innerHTML = `
+
+            <h3 style="color:${colors[name]}">
+                ${labels[name]}
+            </h3>
+
+            <div style="overflow-x:auto">
+
+                <table style="
+                    width:100%;
+                    border-collapse:collapse;
+                    font-size:12px;
+                    text-align:left;
+                ">
+
+                    <thead>
+                        <tr style="color:#94A3B8">
+                            <th>Metric</th>
+                            <th>Steady-speed</th>
+                            <th>Dynamic</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        ${rows.map(row => `
+                            <tr>
+                                ${row.map(value => `
+                                    <td style="
+                                        padding:10px 5px;
+                                        border-bottom:
+                                            1px solid #263449;
+                                    ">
+                                        ${value}
+                                    </td>
+                                `).join("")}
+                            </tr>
+                        `).join("")}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <p style="
+                color:#94A3B8;
+                font-size:12px;
+                line-height:1.8;
+            ">
+
+                Average simulated speed:
+                ${format(
+                    dynamic.average_speed_kmh,
+                    2, "km/h"
+                )}
+
+                <br>
+
+                Maximum simulated speed:
+                ${format(
+                    dynamic.maximum_speed_kmh,
+                    2, "km/h"
+                )}
+
+                <br>
+
+                Mapped signal stops:
+                ${format(dynamic.mapped_signal_stops, 0)}
+
+                <br>
+
+                Telemetry observations:
+                ${format(dynamic.observations, 0)}
+
+            </p>
+
+            <div style="
+                font-size:12px;
+                color:${coverageColor};
+                margin-bottom:8px;
+            ">
+                Model range coverage:
+                ${format(coverage, 2, "%")}
+            </div>
+
+            <div style="
+                height:7px;
+                background:#263449;
+                border-radius:10px;
+                overflow:hidden;
+            ">
+
+                <div style="
+                    height:100%;
+                    width:${Math.max(
+                    0, Math.min(100, coverage)
+                )}%;
+                    background:${coverageColor};
+                "></div>
+
+            </div>
+
+            ${coverage < 100 ? `
+
+                <p style="
+                    color:#F59E0B;
+                    font-size:11px;
+                ">
+                    Some simulated telemetry is outside
+                    the model training ranges.
+                    Complete fuel estimates are unavailable.
+                </p>
+
+            ` : ""}
+
+        `;
+
+                container.appendChild(card);
+            }
+        }
+
+
+
+        function drawRoutes() {
+
+            routeLayer.clearLayers();
+
+            if (!currentResult) return;
+
+            const names = Object.keys(
+                currentResult.routes
+            );
+
+            names.sort(
+                (a, b) =>
+                    Number(a === activeRoute) -
+                    Number(b === activeRoute)
+            );
+
+            for (const name of names) {
+
+                const route = currentResult.routes[name];
+
+                const selected = name === activeRoute;
+
+                L.polyline(route.geometry, {
+                    pane: "routes",
+                    color: colors[name],
+                    weight: selected ? 14 : 7,
+                    opacity: 0.12,
+                    interactive: false
+                }).addTo(routeLayer);
+
+                const line = L.polyline(route.geometry, {
+                    pane: "routes",
+                    color: colors[name],
+                    weight: selected ? 6 : 3.5,
+                    opacity: selected ? 1 : 0.65,
+                    dashArray:
+                        name === "shortest" ? "7 6" : null
+                });
+
+                line.bindTooltip(labels[name]);
+
+                line.on("click", () => {
+
+                    if (!busy && !pickMode) {
+                        selectRoute(name);
+                    }
+
+                });
+
+                line.addTo(routeLayer);
+            }
+        }
+
+
+        function selectRoute(name) {
+
+            if (!currentResult ||
+                !currentResult.routes[name]) return;
+
+            activeRoute = name;
+
+            const route = currentResult.routes[name];
+
+            const metric = route.metrics;
+
+            $("distance").textContent = format(
+                metric.distance_km, 2, "km"
+            );
+
+            $("duration").textContent = format(
+                metric.duration_minutes, 1, "min"
+            );
+
+            $("fuel").textContent = format(
+                metric.estimated_fuel_l, 3, "L"
+            );
+
+            $("co2").textContent = format(
+                metric.estimated_co2_kg, 3, "kg"
+            );
+
+            let notice = "Selected: " + labels[name] +
+                ". Model: " + currentResult.model + ".";
+
+            if (metric.out_of_domain_edges > 0) {
+
+                notice += " Fuel estimate unavailable: " +
+                    metric.out_of_domain_edges +
+                    " road segments outside training range.";
+            }
+
+            notice +=
+                " Steady-speed simulation only. " +
+                "Not validated for operational navigation.";
+
+            $("model-notice").textContent = notice;
+
+            drawRoutes();
+            renderRouteCards();
+        }
+
+
+        function renderRouteCards() {
+
+            const container = $("route-results");
+
+            container.replaceChildren();
+
+            for (const name of [
+                "shortest", "fastest", "eco"
+            ]) {
+
+                const route = currentResult.routes[name];
+
+                if (!route) continue;
+
+                const m = route.metrics;
+
+                const card = document.createElement("button");
+
+                card.className = "route-card";
+
+                if (activeRoute === name) {
+                    card.classList.add("selected");
+                }
+
+                card.style.setProperty(
+                    "--route-color", colors[name]
+                );
+
+                card.innerHTML = `
+            <div class="route-name">
+                ${labels[name]}
+            </div>
+
+            ${currentResult.recommended_route === name
+                        ? '<div class="recommended">RECOMMENDED</div>'
+                        : ''}
+
+            <div class="route-distance">
+                ${format(m.distance_km, 2, "km")}
+            </div>
+
+            <div class="route-details">
+
+                Estimated time:
+                ${format(m.duration_minutes, 1, "min")}
+                <br>
+
+                Fuel:
+                ${format(m.estimated_fuel_l, 3, "L")}
+                <br>
+
+                CO₂:
+                ${format(m.estimated_co2_kg, 3, "kg")}
+                <br>
+
+                Fuel savings:
+                ${format(m.fuel_savings_percent, 2, "%")}
+
+            </div>
+        `;
+
+                card.onclick = () => {
+
+                    if (!busy) selectRoute(name);
+                };
+
+                container.appendChild(card);
+            }
+        }
+
+
+        function setBusy(value) {
+
+            busy = value;
+
+            $("optimize").disabled = value || !ready;
+
+            $("optimize").textContent = value
+                ? "Calculating Routes..."
+                : "Optimize Routes";
+
+            document.querySelectorAll("input")
+                .forEach(input => input.disabled = value);
+
+            $("pick-origin").disabled = value;
+
+            $("pick-destination").disabled = value;
+        }
+
+
+        async function optimizeRoutes() {
+
+            if (busy || !ready) return;
+
+            let payload;
+
+            try {
+
+                payload = {
+                    origin: readLocation("origin"),
+                    destination: readLocation("destination"),
+                    include_dynamic: $("dynamic-mode").checked
+                };
+
+                updateMarkers();
+
+            } catch (error) {
+
+                setMessage(error.message, true);
+
+                return;
+            }
+
+            resetResults();
+
+            setPickMode(null);
+
+            setBusy(true);
+
+            setMessage("Calculating route alternatives...");
+
+            try {
+
+                currentResult = await request(
+                    "/routing/optimize",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(payload)
+                    }
+                );
+
+                const names = Object.keys(
+                    currentResult.routes
+                );
+
+                if (!names.length) {
+                    throw new Error("No routes available.");
+                }
+
+                const selected =
+                    currentResult.recommended_route ||
+                    names[0];
+
+                selectRoute(selected);
+                renderDynamicResults();
+
+                const bounds = L.latLngBounds([]);
+
+                for (const route of Object.values(
+                    currentResult.routes
+                )) {
+                    route.geometry.forEach(
+                        point => bounds.extend(point)
+                    );
+                }
+
+                bounds.extend(originMarker.getLatLng());
+                bounds.extend(destinationMarker.getLatLng());
+
+                if (bounds.isValid()) {
+                    map.fitBounds(bounds, {
+                        padding: [50, 50],
+                        maxZoom: 16
+                    });
+                }
+
+                setMessage(
+                    names.length +
+                    " routing objectives evaluated. " +
+                    "Select a route card to inspect it."
+                );
+
+            } catch (error) {
+
+                resetResults();
+
+                setMessage(error.message, true);
+
+            } finally {
+
+                setBusy(false);
+            }
+        }
+
+
+        $("optimize").onclick = optimizeRoutes;
+
+        loadNetwork();
+
+    </script>
+
+</body>
+
+</html>

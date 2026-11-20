@@ -1,0 +1,22 @@
+{
+    "project": "EcoRoute AI",
+    "default_city": "Noida, Uttar Pradesh, India",
+    "network_type": "drive",
+    "vehicle_type": "heavy_duty_diesel_truck",
+    "diesel_co2_kg_per_litre": 2.68,
+    "alternative_routes": 3,
+    "maximum_detour_percent": 25,
+    "request_timeout_seconds": 180,
+    "cache_enabled": true,
+    "default_speed_kmh": 30,
+    "highway_speeds_kmh": {
+        "motorway": 70,
+        "trunk": 55,
+        "primary": 40,
+        "secondary": 35,
+        "tertiary": 30,
+        "residential": 20,
+        "service": 15,
+        "unclassified": 25
+    }
+}
